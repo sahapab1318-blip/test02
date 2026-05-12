@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>相鉄フレッサイン京都清水五条 — Guest Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Jost:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    :root {
+      --navy:      #12303a;
+      --navy-mid:  #1a3f4a;
+      --navy-card: #1f4d59;
+      --teal:      #29a8b8;
+      --teal-lt:   #5ccfde;
+      --teal-dim:  rgba(41,168,184,.22);
+      --teal-glow: rgba(41,168,184,.16);
+      --white:     #f4fbfc;
+      --white-dim: rgba(244,251,252,.7);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,.35);
+      --shadow-sm: 0 4px 16px rgba(0,0,0,.22);
+      --radius:    16px;
+      --radius-sm: 10px;
+      --serif:     'Cormorant Garamond', Georgia, serif;
+      --sans:      'Jost', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+      --dur:       .3s;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background-color: var(--navy);
+      color: var(--white);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 env(safe-area-inset-bottom);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(28,138,151,.18) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 110% 80%, rgba(28,138,151,.1) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .035;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Page / View system ───────────────────────────────────── */
+    .page {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px;
+    }
+
+    /* views */
+    .view { display: none; width: 100%; }
+    .view.active { display: flex; flex-direction: column; }
+
+    /* ── Language switcher ────────────────────────────────────── */
+    .lang-bar {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px 0 0;
+      animation: fadeDown .5s ease both;
+    }
+
+    .lang-btn {
+      font-family: var(--sans);
+      font-size: .68rem;
+      font-weight: 400;
+      letter-spacing: .06em;
+      padding: 5px 11px;
+      border-radius: 20px;
+      border: 1px solid rgba(28,138,151,.35);
+      background: transparent;
+      color: var(--white-dim);
+      cursor: pointer;
+      transition: all var(--dur) ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lang-btn:hover { border-color: var(--teal); color: var(--teal-lt); }
+    .lang-btn.active {
+      background: var(--teal-dim);
+      border-color: var(--teal);
+      color: var(--teal-lt);
+      font-weight: 500;
+    }
+
+    /* ── Header ───────────────────────────────────────────────── */
+    header {
+      padding: 28px 0 28px;
+      text-align: center;
+      animation: fadeDown .7s .1s ease both;
+    }
+
+    .hotel-eyebrow {
+      font-weight: 300;
+      font-size: .65rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--teal-lt);
+      margin-bottom: 12px;
+    }
+
+    .hotel-name-ja {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--white);
+      letter-spacing: .08em;
+      margin-bottom: 4px;
+    }
+
+    .hotel-name-en {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      color: var(--white);
+      letter-spacing: .04em;
+    }
+
+    .teal-rule {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin: 16px auto 18px;
+    }
+    .teal-rule span {
+      display: block;
+      height: 1px;
+      width: 44px;
+      background: linear-gradient(90deg, transparent, var(--teal));
+    }
+    .teal-rule span:last-child {
+      background: linear-gradient(90deg, var(--teal), transparent);
+    }
+    .teal-rule i { color: var(--teal); font-size: .55rem; }
+
+    .hotel-welcome {
+      font-weight: 300;
+      font-size: .88rem;
+      line-height: 1.7;
+      color: var(--white-dim);
+      max-width: 300px;
+      margin: 0 auto;
+      letter-spacing: .02em;
+    }
+
+    /* ── Section label ────────────────────────────────────────── */
+    .section-label {
+      font-size: .63rem;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--teal-lt);
+      margin-bottom: 14px;
+      padding-left: 2px;
+      animation: fadeUp .6s .25s ease both;
+    }
+
+    /* ── Portal Cards ─────────────────────────────────────────── */
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--navy-card);
+      border: 1px solid rgba(28,138,151,.22);
+      border-radius: var(--radius);
+      text-decoration: none;
+      color: var(--white);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition:
+        transform var(--dur) cubic-bezier(.22,1,.36,1),
+        box-shadow var(--dur) ease,
+        border-color var(--dur) ease;
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--teal-lt), var(--teal));
+      opacity: 0;
+      transition: opacity var(--dur) ease;
+      z-index: 2;
+    }
+
+    .card:hover, .card:focus-visible {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(28,138,151,.35);
+      border-color: rgba(28,138,151,.55);
+      outline: none;
+    }
+    .card:hover::after { opacity: 1; }
+    .card:active { transform: scale(.975); box-shadow: var(--shadow-sm); }
+
+    .card-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--navy-mid);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .5s cubic-bezier(.22,1,.36,1), filter .3s ease;
+      filter: brightness(.82) saturate(.85);
+      z-index: 1;
+    }
+    .card:hover .card-thumb img {
+      transform: scale(1.05);
+      filter: brightness(.95) saturate(1.05);
+    }
+
+    .card-thumb::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 55%;
+      background: linear-gradient(to bottom, transparent, rgba(11,31,36,.95));
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .thumb-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #102830 0%, #0b1f24 100%);
+      z-index: 0;
+    }
+    .thumb-placeholder i { font-size: 2rem; color: var(--teal); opacity: .35; }
+    .thumb-placeholder span {
+      font-size: .6rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      opacity: .4;
+      text-align: center;
+      max-width: 180px;
+      line-height: 1.5;
+    }
+
+    .play-btn {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+    .play-btn-inner {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(11,31,36,.6);
+      border: 1.5px solid rgba(28,138,151,.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+      transition: background var(--dur) ease, transform var(--dur) ease, border-color var(--dur) ease;
+    }
+    .card:hover .play-btn-inner {
+      background: rgba(28,138,151,.35);
+      border-color: var(--teal-lt);
+      transform: scale(1.13);
+    }
+    .play-btn-inner i { color: var(--white); font-size: 1.1rem; margin-left: 4px; }
+
+    .card-body {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px 16px;
+    }
+
+    .card-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--teal-dim);
+      border: 1px solid rgba(28,138,151,.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--dur) ease, border-color var(--dur) ease;
+    }
+    .card:hover .card-icon {
+      background: rgba(28,138,151,.28);
+      border-color: rgba(28,138,151,.6);
+    }
+    .card-icon i { font-size: 1rem; color: var(--teal-lt); }
+
+    .card-text { flex: 1; min-width: 0; }
+
+    .card-title-main {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+    .card-title-sub {
+      display: block;
+      font-size: .7rem;
+      font-weight: 300;
+      color: var(--white-dim);
+      margin-top: 1px;
+      letter-spacing: .03em;
+    }
+
+    .yt-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .6rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(255,100,80,.9);
+      margin-top: 5px;
+    }
+    .yt-badge i { font-size: .68rem; }
+
+    .map-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .6rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--teal-lt);
+      margin-top: 5px;
+    }
+    .map-badge i { font-size: .68rem; }
+
+    .card-arrow {
+      flex-shrink: 0;
+      color: var(--teal);
+      font-size: .8rem;
+      opacity: .5;
+      transition: opacity var(--dur) ease, transform var(--dur) ease;
+    }
+    .card:hover .card-arrow { opacity: 1; transform: translateX(4px); }
+
+    /* Stagger portal cards */
+    .cards .card:nth-child(1) { animation: fadeUp .55s .30s ease both; }
+    .cards .card:nth-child(2) { animation: fadeUp .55s .42s ease both; }
+    .cards .card:nth-child(3) { animation: fadeUp .55s .54s ease both; }
+    .cards .card:nth-child(4) { animation: fadeUp .55s .66s ease both; }
+    .cards .card:nth-child(5) { animation: fadeUp .55s .78s ease both; }
+    .cards .card:nth-child(6) { animation: fadeUp .55s .90s ease both; }
+
+    /* ── Divider ──────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(28,138,151,.25) 30%, rgba(28,138,151,.25) 70%, transparent);
+      margin: 26px 0;
+      animation: fadeUp .6s .85s ease both;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 0 0 44px;
+      animation: fadeUp .6s .9s ease both;
+    }
+
+    .footer-icon-ring {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(28,138,151,.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      background: var(--teal-dim);
+    }
+    .footer-icon-ring i { color: var(--teal-lt); font-size: .95rem; }
+
+    .footer-text {
+      font-size: .8rem;
+      font-weight: 300;
+      color: var(--white-dim);
+      line-height: 1.75;
+      letter-spacing: .02em;
+    }
+
+    .footer-dial {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--teal-lt);
+      letter-spacing: .05em;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .footer-copy {
+      margin-top: 24px;
+      font-size: .58rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(240,248,249,.18);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       NEIGHBORHOOD GUIDE VIEW
+    ═══════════════════════════════════════════════════════════ */
+
+    /* ── Map page header ──────────────────────────────────────── */
+    .map-header {
+      padding: 28px 0 22px;
+      text-align: center;
+      animation: fadeDown .7s .05s ease both;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .7rem;
+      font-weight: 400;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--teal-lt);
+      background: var(--teal-dim);
+      border: 1px solid rgba(28,138,151,.35);
+      border-radius: 20px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all var(--dur) ease;
+      margin-bottom: 20px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:hover {
+      border-color: var(--teal);
+      background: rgba(28,138,151,.3);
+    }
+    .back-btn:active { transform: scale(.96); }
+    .back-btn i { font-size: .65rem; }
+
+    .map-title-ja {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      font-size: .95rem;
+      letter-spacing: .12em;
+      color: var(--white-dim);
+      margin-bottom: 4px;
+    }
+
+    .map-title-en {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: .04em;
+      color: var(--white);
+      line-height: 1.1;
+    }
+
+    .map-subtitle {
+      font-size: .82rem;
+      font-weight: 300;
+      color: var(--white-dim);
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    /* ── Category filter chips ────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding: 0 0 16px;
+      scrollbar-width: none;
+      animation: fadeUp .5s .2s ease both;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+
+    .filter-chip {
+      flex-shrink: 0;
+      font-family: var(--sans);
+      font-size: .62rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(28,138,151,.3);
+      background: transparent;
+      color: var(--white-dim);
+      cursor: pointer;
+      transition: all var(--dur) ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .filter-chip.active {
+      background: var(--teal-dim);
+      border-color: var(--teal);
+      color: var(--teal-lt);
+    }
+    .filter-chip:hover {
+      border-color: var(--teal);
+      color: var(--teal-lt);
+    }
+
+    /* ── Neighborhood grid ────────────────────────────────────── */
+    .nb-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+      padding-bottom: 32px;
+    }
+
+    /* ── Neighborhood card ────────────────────────────────────── */
+    .nb-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--navy-card);
+      border: 1px solid rgba(28,138,151,.2);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--white);
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition:
+        transform var(--dur) cubic-bezier(.22,1,.36,1),
+        box-shadow var(--dur) ease,
+        border-color var(--dur) ease;
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+    }
+
+    .nb-card:hover, .nb-card:focus-visible {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(28,138,151,.4);
+      border-color: rgba(28,138,151,.5);
+      outline: none;
+    }
+    .nb-card:active {
+      transform: scale(.96);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Image container */
+    .nb-img-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: var(--navy-mid);
+    }
+
+    .nb-img-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(.78) saturate(.8);
+      transition: transform .5s cubic-bezier(.22,1,.36,1), filter .3s ease;
+      z-index: 1;
+    }
+    .nb-card:hover .nb-img-wrap img {
+      transform: scale(1.08);
+      filter: brightness(.92) saturate(1.05);
+    }
+
+    /* Gradient overlay on image */
+    .nb-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 35%, rgba(11,31,36,.85) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Category badge on image */
+    .nb-cat-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 3;
+      font-size: .5rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: rgba(11,31,36,.65);
+      border: 1px solid rgba(28,138,151,.45);
+      color: var(--teal-lt);
+      backdrop-filter: blur(6px);
+    }
+
+    /* Maps pin overlay */
+    .nb-map-pin {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      z-index: 3;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(11,31,36,.7);
+      border: 1px solid rgba(28,138,151,.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+      transition: background var(--dur) ease, border-color var(--dur) ease, transform var(--dur) ease;
+    }
+    .nb-map-pin i { font-size: .6rem; color: var(--teal-lt); }
+    .nb-card:hover .nb-map-pin {
+      background: rgba(28,138,151,.4);
+      border-color: var(--teal-lt);
+      transform: scale(1.15);
+    }
+
+    /* Placeholder when no image */
+    .nb-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #102830 0%, #0b1f24 100%);
+      z-index: 0;
+    }
+    .nb-placeholder i { font-size: 1.6rem; color: var(--teal); opacity: .3; }
+    .nb-placeholder span {
+      font-size: .5rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      opacity: .35;
+    }
+
+    /* Card body */
+    .nb-body {
+      padding: 10px 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+    }
+
+    .nb-name {
+      font-size: .82rem;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nb-desc {
+      font-size: .65rem;
+      font-weight: 300;
+      color: var(--white-dim);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .nb-open-maps {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .55rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--teal-lt);
+      margin-top: 5px;
+      opacity: .8;
+      transition: opacity var(--dur) ease;
+    }
+    .nb-card:hover .nb-open-maps { opacity: 1; }
+    .nb-open-maps i { font-size: .55rem; }
+
+    /* Grid stagger animation */
+    .nb-grid .nb-card { animation: fadeUp .5s ease both; }
+    .nb-grid .nb-card:nth-child(1)  { animation-delay: .10s; }
+    .nb-grid .nb-card:nth-child(2)  { animation-delay: .16s; }
+    .nb-grid .nb-card:nth-child(3)  { animation-delay: .22s; }
+    .nb-grid .nb-card:nth-child(4)  { animation-delay: .28s; }
+    .nb-grid .nb-card:nth-child(5)  { animation-delay: .34s; }
+    .nb-grid .nb-card:nth-child(6)  { animation-delay: .40s; }
+    .nb-grid .nb-card:nth-child(7)  { animation-delay: .46s; }
+    .nb-grid .nb-card:nth-child(8)  { animation-delay: .52s; }
+    .nb-grid .nb-card:nth-child(9)  { animation-delay: .58s; }
+    .nb-grid .nb-card:nth-child(10) { animation-delay: .64s; }
+    .nb-grid .nb-card:nth-child(11) { animation-delay: .70s; }
+    .nb-grid .nb-card:nth-child(12) { animation-delay: .76s; }
+    .nb-grid .nb-card:nth-child(13) { animation-delay: .82s; }
+    .nb-grid .nb-card:nth-child(14) { animation-delay: .88s; }
+    .nb-grid .nb-card:nth-child(15) { animation-delay: .94s; }
+
+    /* ── Map page footer ──────────────────────────────────────── */
+    .map-footer {
+      text-align: center;
+      padding: 8px 0 44px;
+      animation: fadeUp .6s .9s ease both;
+    }
+
+    .map-footer-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-weight: 400;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      background: rgba(28,138,151,.1);
+      border: 1px solid rgba(28,138,151,.3);
+      border-radius: 24px;
+      padding: 10px 22px;
+      cursor: pointer;
+      transition: all var(--dur) ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .map-footer-btn:hover {
+      background: var(--teal-dim);
+      border-color: var(--teal);
+      color: var(--teal-lt);
+    }
+    .map-footer-btn:active { transform: scale(.97); }
+
+    .footer-copy {
+      margin-top: 24px;
+      font-size: .58rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(240,248,249,.18);
+    }
+
+    /* ── Language content visibility ──────────────────────────── */
+    [data-lang]      { display: none; }
+    span[data-lang]  { display: none; }
+
+    .lang-ja [data-lang="ja"],
+    .lang-en [data-lang="en"],
+    .lang-zh [data-lang="zh"],
+    .lang-es [data-lang="es"] { display: block; }
+
+    .lang-ja span[data-lang="ja"],
+    .lang-en span[data-lang="en"],
+    .lang-zh span[data-lang="zh"],
+    .lang-es span[data-lang="es"] { display: inline; }
+
+    /* ── Keyframes ────────────────────────────────────────────── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0ms !important; transition-duration: 0ms !important; }
+    }
+  </style>
+</head>
+
+<body class="lang-ja">
+<div class="page">
+
+  <!-- ── Language bar (shared) ────────────────────────────────── -->
+  <div class="lang-bar">
+    <button class="lang-btn active" onclick="setLang('ja', this)">日本語</button>
+    <button class="lang-btn"        onclick="setLang('en', this)">English</button>
+    <button class="lang-btn"        onclick="setLang('zh', this)">中文</button>
+    <button class="lang-btn"        onclick="setLang('es', this)">Español</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       VIEW 1 — GUEST PORTAL
+  ════════════════════════════════════════════════════════════ -->
+  <div id="view-portal" class="view active">
+
+    <header>
+      <p class="hotel-eyebrow">
+        <span data-lang="ja">ゲストサービス</span>
+        <span data-lang="en">Guest Services Portal</span>
+        <span data-lang="zh">宾客服务门户</span>
+        <span data-lang="es">Portal de Servicios</span>
+      </p>
+      <div class="hotel-name-ja">相鉄フレッサイン京都清水五条</div>
+      <div class="hotel-name-en">Sotetsu Fresa Inn Kyoto-Kiyomizu Gojo</div>
+      <div class="teal-rule">
+        <span></span>
+        <i class="fa-solid fa-diamond fa-xs"></i>
+        <span></span>
+      </div>
+      <p class="hotel-welcome">
+        <span data-lang="ja">ご滞在へようこそ。<br>本日はどのようなご用件でしょうか？</span>
+        <span data-lang="en">Welcome to your stay.<br>How can we help you today?</span>
+        <span data-lang="zh">欢迎入住。<br>今天有什么可以帮助您的吗？</span>
+        <span data-lang="es">Bienvenido a su estancia.<br>¿En qué podemos ayudarle hoy?</span>
+      </p>
+    </header>
+
+    <p class="section-label">
+      <i class="fa-brands fa-youtube" style="margin-right:6px;"></i>
+      <span data-lang="ja">動画ガイド</span>
+      <span data-lang="en">Video Guides</span>
+      <span data-lang="zh">视频指南</span>
+      <span data-lang="es">Guías en Video</span>
+    </p>
+
+    <div class="cards">
+
+      <!-- Card 1 · Check Out ──────────────────────────────────── -->
+      <a class="card" href="[INSERT_CHECKOUT_YOUTUBE_LINK_HERE]" target="_blank" rel="noopener noreferrer">
+        <div class="card-thumb">
+          <div class="thumb-placeholder">
+            <i class="fa-solid fa-door-open"></i>
+            <span>Add video ID for thumbnail</span>
+          </div>
+          <img src="https://img.youtube.com/vi/CHECKOUT_VIDEO_ID/hqdefault.jpg" alt="Check out video thumbnail" loading="lazy" onerror="this.style.display='none'" />
+          <div class="play-btn"><div class="play-btn-inner"><i class="fa-solid fa-play"></i></div></div>
+        </div>
+        <div class="card-body">
+          <div class="card-icon"><i class="fa-solid fa-door-open"></i></div>
+          <div class="card-text">
+            <span class="card-title-main" data-lang="ja">チェックアウト方法</span>
+            <span class="card-title-main" data-lang="en">How to Check Out</span>
+            <span class="card-title-main" data-lang="zh">如何办理退房</span>
+            <span class="card-title-main" data-lang="es">Cómo Hacer el Check-Out</span>
+            <span class="card-title-sub" data-lang="ja">退出手続きのご案内</span>
+            <span class="card-title-sub" data-lang="en">Step-by-step departure guide</span>
+            <span class="card-title-sub" data-lang="zh">逐步退房指引</span>
+            <span class="card-title-sub" data-lang="es">Guía paso a paso para salida</span>
+            <div class="yt-badge"><i class="fa-brands fa-youtube"></i>
+              <span data-lang="ja">動画を見る</span>
+              <span data-lang="en">Watch video</span>
+              <span data-lang="zh">观看视频</span>
+              <span data-lang="es">Ver video</span>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right card-arrow"></i>
+        </div>
+      </a>
+
+      <!-- Card 2 · Laundry ────────────────────────────────────── -->
+      <a class="card" href="[INSERT_LAUNDRY_YOUTUBE_LINK_HERE]" target="_blank" rel="noopener noreferrer">
+        <div class="card-thumb">
+          <div class="thumb-placeholder">
+            <i class="fa-solid fa-shirt"></i>
+            <span>Add video ID for thumbnail</span>
+          </div>
+          <img src="https://img.youtube.com/vi/LAUNDRY_VIDEO_ID/hqdefault.jpg" alt="Laundry room video thumbnail" loading="lazy" onerror="this.style.display='none'" />
+          <div class="play-btn"><div class="play-btn-inner"><i class="fa-solid fa-play"></i></div></div>
+        </div>
+        <div class="card-body">
+          <div class="card-icon"><i class="fa-solid fa-shirt"></i></div>
+          <div class="card-text">
+            <span class="card-title-main" data-lang="ja">ランドリールームの使い方</span>
+            <span class="card-title-main" data-lang="en">How to Use the Laundry Room</span>
+            <span class="card-title-main" data-lang="zh">如何使用洗衣房</span>
+            <span class="card-title-main" data-lang="es">Cómo Usar la Lavandería</span>
+            <span class="card-title-sub" data-lang="ja">洗濯機・乾燥機のご利用方法</span>
+            <span class="card-title-sub" data-lang="en">Machines, detergent &amp; payment</span>
+            <span class="card-title-sub" data-lang="zh">洗衣机、洗涤剂及付款说明</span>
+            <span class="card-title-sub" data-lang="es">Máquinas, detergente y pago</span>
+            <div class="yt-badge"><i class="fa-brands fa-youtube"></i>
+              <span data-lang="ja">動画を見る</span>
+              <span data-lang="en">Watch video</span>
+              <span data-lang="zh">观看视频</span>
+              <span data-lang="es">Ver video</span>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right card-arrow"></i>
+        </div>
+      </a>
+
+      <!-- Card 3 · Luggage Forwarding ─────────────────────────── -->
+      <a class="card" href="[INSERT_LUGGAGE_YOUTUBE_LINK_HERE]" target="_blank" rel="noopener noreferrer">
+        <div class="card-thumb">
+          <div class="thumb-placeholder">
+            <i class="fa-solid fa-suitcase-rolling"></i>
+            <span>Add video ID for thumbnail</span>
+          </div>
+          <img src="https://img.youtube.com/vi/LUGGAGE_VIDEO_ID/hqdefault.jpg" alt="Luggage service video thumbnail" loading="lazy" onerror="this.style.display='none'" />
+          <div class="play-btn"><div class="play-btn-inner"><i class="fa-solid fa-play"></i></div></div>
+        </div>
+        <div class="card-body">
+          <div class="card-icon"><i class="fa-solid fa-suitcase-rolling"></i></div>
+          <div class="card-text">
+            <span class="card-title-main" data-lang="ja">荷物の発送方法</span>
+            <span class="card-title-main" data-lang="en">How to Send Luggage</span>
+            <span class="card-title-main" data-lang="zh">如何寄送行李</span>
+            <span class="card-title-main" data-lang="es">Cómo Enviar el Equipaje</span>
+            <span class="card-title-sub" data-lang="ja">お預かり・発送・お受け取りのご案内</span>
+            <span class="card-title-sub" data-lang="en">Storage, forwarding &amp; pickup</span>
+            <span class="card-title-sub" data-lang="zh">行李存放、转运及取件说明</span>
+            <span class="card-title-sub" data-lang="es">Almacenaje, envío y recogida</span>
+            <div class="yt-badge"><i class="fa-brands fa-youtube"></i>
+              <span data-lang="ja">動画を見る</span>
+              <span data-lang="en">Watch video</span>
+              <span data-lang="zh">观看视频</span>
+              <span data-lang="es">Ver video</span>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right card-arrow"></i>
+        </div>
+      </a>
+
+      <!-- Card 4 · Luggage Self-Cloakroom ────────────────────── -->
+      <a class="card" href="[INSERT_LUGGAGECLOAKROOM_YOUTUBE_LINK_HERE]" target="_blank" rel="noopener noreferrer">
+        <div class="card-thumb">
+          <div class="thumb-placeholder">
+            <i class="fa-solid fa-box-archive"></i>
+            <span>Add video ID for thumbnail</span>
+          </div>
+          <img src="https://img.youtube.com/vi/LUGGAGECLOAKROOM_VIDEO_ID/hqdefault.jpg" alt="Luggage self-cloakroom video thumbnail" loading="lazy" onerror="this.style.display='none'" />
+          <div class="play-btn"><div class="play-btn-inner"><i class="fa-solid fa-play"></i></div></div>
+        </div>
+        <div class="card-body">
+          <div class="card-icon"><i class="fa-solid fa-box-archive"></i></div>
+          <div class="card-text">
+            <span class="card-title-main" data-lang="ja">自動荷物保管機の使い方</span>
+            <span class="card-title-main" data-lang="en">How to Use the Luggage Self-Cloakroom</span>
+            <span class="card-title-main" data-lang="zh">如何使用自助行李寄存机</span>
+            <span class="card-title-main" data-lang="es">Cómo Usar la Consigna Automática</span>
+            <span class="card-title-sub" data-lang="ja">荷物を自動で預けられるロッカーのご利用方法</span>
+            <span class="card-title-sub" data-lang="en">Store and retrieve your luggage anytime</span>
+            <span class="card-title-sub" data-lang="zh">随时自助存取行李</span>
+            <span class="card-title-sub" data-lang="es">Guarde y recoja su equipaje cuando quiera</span>
+            <div class="yt-badge"><i class="fa-brands fa-youtube"></i>
+              <span data-lang="ja">動画を見る</span>
+              <span data-lang="en">Watch video</span>
+              <span data-lang="zh">观看视频</span>
+              <span data-lang="es">Ver video</span>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right card-arrow"></i>
+        </div>
+      </a>
+
+      <!-- Card 5 · Neighborhood Guide ─────────────────────────── -->
+      <!-- This card opens the neighborhood guide VIEW instead of an external link -->
+      <div class="card" role="button" tabindex="0" onclick="showMap()" onkeydown="if(event.key==='Enter')showMap()">
+        <div class="card-body" style="padding: 18px 16px;">
+          <div class="card-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+          <div class="card-text">
+            <span class="card-title-main" data-lang="ja">周辺マップ</span>
+            <span class="card-title-main" data-lang="en">Neighborhood Guide</span>
+            <span class="card-title-main" data-lang="zh">周边地图</span>
+            <span class="card-title-main" data-lang="es">Guía del Barrio</span>
+            <span class="card-title-sub" data-lang="ja">近くの観光スポット・飲食店・コンビニなど</span>
+            <span class="card-title-sub" data-lang="en">Nearby sights, restaurants &amp; convenience stores</span>
+            <span class="card-title-sub" data-lang="zh">附近景点、餐厅及便利店</span>
+            <span class="card-title-sub" data-lang="es">Atracciones, restaurantes y tiendas cercanas</span>
+            <div class="map-badge"><i class="fa-solid fa-location-dot"></i>
+              <span data-lang="ja">地図を見る</span>
+              <span data-lang="en">Explore the area</span>
+              <span data-lang="zh">探索周边</span>
+              <span data-lang="es">Explorar la zona</span>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right card-arrow"></i>
+        </div>
+      </div>
+
+    </div><!-- /cards -->
+
+    <div class="divider"></div>
+
+    <footer>
+      <div class="footer-icon-ring">
+        <i class="fa-solid fa-phone-volume"></i>
+      </div>
+      <p class="footer-text">
+        <span data-lang="ja">
+          お困りのことがございましたら<br>
+          <span class="footer-dial">客室の電話で「＃」番へ</span>
+          24時間スタッフが対応いたします
+        </span>
+        <span data-lang="en">
+          Need immediate assistance?<br>
+          <span class="footer-dial">Dial # from your room phone</span>
+          Our team is available 24 hours a day.
+        </span>
+        <span data-lang="zh">
+          需要即时帮助？<br>
+          <span class="footer-dial">请拨打房间电话「＃」</span>
+          我们的团队全天24小时为您服务。
+        </span>
+        <span data-lang="es">
+          ¿Necesita asistencia inmediata?<br>
+          <span class="footer-dial">Marque # desde su teléfono</span>
+          Nuestro equipo está disponible las 24 horas.
+        </span>
+      </p>
+      <p class="footer-copy">© 相鉄フレッサイン京都清水五条 &nbsp;·&nbsp; Sotetsu Fresa Inn</p>
+    </footer>
+
+  </div><!-- /view-portal -->
+
+
+  <!-- ════════════════════════════════════════════════════════════
+       VIEW 2 — NEIGHBORHOOD GUIDE / 周辺マップ
+  ════════════════════════════════════════════════════════════ -->
+  <div id="view-map" class="view">
+
+    <div class="map-header">
+      <button class="back-btn" onclick="showPortal()">
+        <i class="fa-solid fa-chevron-left"></i>
+        <span data-lang="ja">ゲストポータルへ戻る</span>
+        <span data-lang="en">Back to Guest Portal</span>
+        <span data-lang="zh">返回宾客门户</span>
+        <span data-lang="es">Volver al Portal</span>
+      </button>
+
+      <p class="map-title-ja">周辺マップ</p>
+      <p class="map-title-en">
+        <span data-lang="ja">周辺ガイド</span>
+        <span data-lang="en">Neighborhood Guide</span>
+        <span data-lang="zh">周边探索指南</span>
+        <span data-lang="es">Guía del Barrio</span>
+      </p>
+
+      <div class="teal-rule">
+        <span></span>
+        <i class="fa-solid fa-diamond fa-xs"></i>
+        <span></span>
+      </div>
+
+      <p class="map-subtitle">
+        <span data-lang="ja">ホテル周辺のおすすめスポットをご紹介します</span>
+        <span data-lang="en">Our favourite spots within walking distance of the hotel</span>
+        <span data-lang="zh">为您推荐酒店周边的精选地点</span>
+        <span data-lang="es">Nuestros lugares favoritos cerca del hotel</span>
+      </p>
+    </div>
+
+    <!-- Category filter chips -->
+    <div class="filter-bar">
+      <button class="filter-chip active" onclick="filterCards('all', this)" data-lang="ja">すべて</button>
+      <button class="filter-chip active" onclick="filterCards('all', this)" data-lang="en">All</button>
+      <button class="filter-chip active" onclick="filterCards('all', this)" data-lang="zh">全部</button>
+      <button class="filter-chip active" onclick="filterCards('all', this)" data-lang="es">Todos</button>
+
+      <button class="filter-chip" onclick="filterCards('sights', this)" data-lang="ja">観光</button>
+      <button class="filter-chip" onclick="filterCards('sights', this)" data-lang="en">Sights</button>
+      <button class="filter-chip" onclick="filterCards('sights', this)" data-lang="zh">景点</button>
+      <button class="filter-chip" onclick="filterCards('sights', this)" data-lang="es">Lugares</button>
+
+      <button class="filter-chip" onclick="filterCards('food', this)" data-lang="ja">グルメ</button>
+      <button class="filter-chip" onclick="filterCards('food', this)" data-lang="en">Food</button>
+      <button class="filter-chip" onclick="filterCards('food', this)" data-lang="zh">美食</button>
+      <button class="filter-chip" onclick="filterCards('food', this)" data-lang="es">Comida</button>
+
+      <button class="filter-chip" onclick="filterCards('cafe', this)" data-lang="ja">カフェ</button>
+      <button class="filter-chip" onclick="filterCards('cafe', this)" data-lang="en">Café</button>
+      <button class="filter-chip" onclick="filterCards('cafe', this)" data-lang="zh">咖啡</button>
+      <button class="filter-chip" onclick="filterCards('cafe', this)" data-lang="es">Café</button>
+
+      <button class="filter-chip" onclick="filterCards('shop', this)" data-lang="ja">ショップ</button>
+      <button class="filter-chip" onclick="filterCards('shop', this)" data-lang="en">Shopping</button>
+      <button class="filter-chip" onclick="filterCards('shop', this)" data-lang="zh">购物</button>
+      <button class="filter-chip" onclick="filterCards('shop', this)" data-lang="es">Tiendas</button>
+    </div>
+
+    <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  HOW TO FILL IN THE 15 PLACEHOLDER CARDS                    ║
+    ║                                                              ║
+    ║  Each .nb-card has:                                          ║
+    ║  • data-cat="sights|food|cafe|shop"  ← set the category     ║
+    ║  • href="[INSERT_GOOGLE_MAPS_LINK]"  ← paste Google Maps URL ║
+    ║  • <img src="…">                     ← replace Unsplash URL  ║
+    ║  • .nb-cat-badge text                ← category label        ║
+    ║  • .nb-name text                     ← location name         ║
+    ║  • .nb-desc text                     ← short description     ║
+    ╚══════════════════════════════════════════════════════════════╝
+    -->
+
+    <div class="nb-grid">
+
+      <!-- ── 1 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="sights">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-torii-gate"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&q=70&auto=format&fit=crop" alt="Location 1" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">観光</span><span data-lang="en">Sights</span><span data-lang="zh">景点</span><span data-lang="es">Lugar</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 2 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="food">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-bowl-rice"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=70&auto=format&fit=crop" alt="Location 2" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">グルメ</span><span data-lang="en">Food</span><span data-lang="zh">美食</span><span data-lang="es">Comida</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 3 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="cafe">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-mug-hot"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&q=70&auto=format&fit=crop" alt="Location 3" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">カフェ</span><span data-lang="en">Café</span><span data-lang="zh">咖啡</span><span data-lang="es">Café</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 4 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="shop">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-bag-shopping"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=70&auto=format&fit=crop" alt="Location 4" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">ショップ</span><span data-lang="en">Shop</span><span data-lang="zh">购物</span><span data-lang="es">Tienda</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 5 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="sights">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-landmark"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=400&q=70&auto=format&fit=crop" alt="Location 5" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">観光</span><span data-lang="en">Sights</span><span data-lang="zh">景点</span><span data-lang="es">Lugar</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 6 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="food">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-utensils"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=70&auto=format&fit=crop" alt="Location 6" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">グルメ</span><span data-lang="en">Food</span><span data-lang="zh">美食</span><span data-lang="es">Comida</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 7 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="cafe">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-coffee"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&q=70&auto=format&fit=crop" alt="Location 7" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">カフェ</span><span data-lang="en">Café</span><span data-lang="zh">咖啡</span><span data-lang="es">Café</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 8 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="shop">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-store"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=70&auto=format&fit=crop" alt="Location 8" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">ショップ</span><span data-lang="en">Shop</span><span data-lang="zh">购物</span><span data-lang="es">Tienda</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 9 ─────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="sights">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-mountain-city"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&q=70&auto=format&fit=crop" alt="Location 9" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">観光</span><span data-lang="en">Sights</span><span data-lang="zh">景点</span><span data-lang="es">Lugar</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 10 ────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="food">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-fish"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&q=70&auto=format&fit=crop" alt="Location 10" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">グルメ</span><span data-lang="en">Food</span><span data-lang="zh">美食</span><span data-lang="es">Comida</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 11 ────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="cafe">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-mug-saucer"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=400&q=70&auto=format&fit=crop" alt="Location 11" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">カフェ</span><span data-lang="en">Café</span><span data-lang="zh">咖啡</span><span data-lang="es">Café</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 12 ────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="shop">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-gifts"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&q=70&auto=format&fit=crop" alt="Location 12" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">ショップ</span><span data-lang="en">Shop</span><span data-lang="zh">购物</span><span data-lang="es">Tienda</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 13 ────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="sights">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-pagoda"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=70&auto=format&fit=crop" alt="Location 13" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">観光</span><span data-lang="en">Sights</span><span data-lang="zh">景点</span><span data-lang="es">Lugar</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 14 ────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="food">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-ice-cream"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=70&auto=format&fit=crop" alt="Location 14" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">グルメ</span><span data-lang="en">Food</span><span data-lang="zh">美食</span><span data-lang="es">Comida</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ── 15 ────────────────────────────────────────────────── -->
+      <a class="nb-card" href="[INSERT_GOOGLE_MAPS_LINK]" target="_blank" rel="noopener noreferrer" data-cat="shop">
+        <div class="nb-img-wrap">
+          <div class="nb-placeholder"><i class="fa-solid fa-cart-shopping"></i><span>Photo coming soon</span></div>
+          <img src="https://images.unsplash.com/photo-1534655882240-5a18e57a5c1e?w=400&q=70&auto=format&fit=crop" alt="Location 15" loading="lazy" onerror="this.style.display='none'" />
+          <span class="nb-cat-badge">
+            <span data-lang="ja">ショップ</span><span data-lang="en">Shop</span><span data-lang="zh">购物</span><span data-lang="es">Tienda</span>
+          </span>
+          <div class="nb-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+        </div>
+        <div class="nb-body">
+          <p class="nb-name">
+            <span data-lang="ja">スポット名 [後で編集]</span>
+            <span data-lang="en">Location Name [Edit Later]</span>
+            <span data-lang="zh">地点名称 [稍后填写]</span>
+            <span data-lang="es">Nombre del lugar [Editar]</span>
+          </p>
+          <p class="nb-desc">
+            <span data-lang="ja">簡単な説明をここに入力してください [後で編集]</span>
+            <span data-lang="en">Brief description goes here [Edit Later]</span>
+            <span data-lang="zh">简短描述写在这里 [稍后填写]</span>
+            <span data-lang="es">Descripción breve aquí [Editar]</span>
+          </p>
+          <div class="nb-open-maps"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span data-lang="ja">Google マップで開く</span>
+            <span data-lang="en">Open in Maps</span>
+            <span data-lang="zh">在地图中打开</span>
+            <span data-lang="es">Abrir en Maps</span>
+          </div>
+        </div>
+      </a>
+
+    </div><!-- /nb-grid -->
+
+    <div class="map-footer">
+      <button class="map-footer-btn" onclick="showPortal()">
+        <i class="fa-solid fa-chevron-left"></i>
+        <span data-lang="ja">ゲストポータルへ戻る</span>
+        <span data-lang="en">Back to Guest Portal</span>
+        <span data-lang="zh">返回宾客门户</span>
+        <span data-lang="es">Volver al Portal de Servicios</span>
+      </button>
+      <p class="footer-copy">© 相鉄フレッサイン京都清水五条 &nbsp;·&nbsp; Sotetsu Fresa Inn</p>
+    </div>
+
+  </div><!-- /view-map -->
+
+</div><!-- /page -->
+
+<script>
+  /* ── Language ────────────────────────────────────────────── */
+  function setLang(lang, btn) {
+    document.body.className = document.body.className
+      .replace(/lang-\S+/, '')
+      .trim() + ' lang-' + lang;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Re-apply filter so visible chips update
+    const activeChip = document.querySelector('.filter-chip.active[data-lang="' + lang + '"]');
+    // Just re-render; filter state is stored on nb-cards
+    const cat = currentFilter;
+    applyFilter(cat);
+  }
+
+  /* ── View switching ──────────────────────────────────────── */
+  function showMap() {
+    document.getElementById('view-portal').classList.remove('active');
+    document.getElementById('view-map').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Re-trigger card animations
+    document.querySelectorAll('.nb-card').forEach(c => {
+      c.style.animation = 'none';
+      c.offsetHeight; // reflow
+      c.style.animation = '';
+    });
+  }
+
+  function showPortal() {
+    document.getElementById('view-map').classList.remove('active');
+    document.getElementById('view-portal').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Category filter ─────────────────────────────────────── */
+  let currentFilter = 'all';
+
+  function filterCards(cat, btn) {
+    currentFilter = cat;
+    applyFilter(cat);
+
+    // Update chip active state — only for visible language chips
+    const lang = document.documentElement.lang || 'ja';
+    document.querySelectorAll('.filter-chip[data-lang="' + lang + '"]').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function applyFilter(cat) {
+    document.querySelectorAll('.nb-card').forEach(card => {
+      const show = cat === 'all' || card.dataset.cat === cat;
+      card.style.display = show ? 'flex' : 'none';
+    });
+  }
+</script>
+</body>
+</html>
